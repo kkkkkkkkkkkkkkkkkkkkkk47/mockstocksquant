@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import BottomNav from "../components/BottomNav";
+import ScrollToTop from "../components/ScrollToTop";
 
 export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: "#080B12" }}>
+      <ScrollToTop />
+
       {/* Desktop sidebar — hidden on mobile */}
       <div className="hidden md:flex">
         <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
