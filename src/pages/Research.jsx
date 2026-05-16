@@ -32,20 +32,20 @@ function Section({ title, icon: Icon, color = "#3B82F6", children, defaultOpen =
     <div className="rounded-xl overflow-hidden" style={{ background: "#111827", border: "1px solid #1F2937" }}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-4 transition-colors duration-150"
+        className="w-full flex items-center justify-between px-4 py-3.5 transition-colors duration-150"
         style={{ background: "transparent", border: "none", cursor: "pointer" }}
         onMouseEnter={e => (e.currentTarget.style.background = "#1F2937")}
         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
       >
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg" style={{ background: `${color}20` }}>
-            <Icon size={14} style={{ color }} />
+            <Icon size={13} style={{ color }} />
           </div>
           <span className="text-sm font-semibold" style={{ color: "#F9FAFB" }}>{title}</span>
         </div>
-        {open ? <ChevronUp size={15} style={{ color: "#9CA3AF" }} /> : <ChevronDown size={15} style={{ color: "#9CA3AF" }} />}
+        {open ? <ChevronUp size={14} style={{ color: "#9CA3AF" }} /> : <ChevronDown size={14} style={{ color: "#9CA3AF" }} />}
       </button>
-      {open && <div className="px-5 pb-5">{children}</div>}
+      {open && <div className="px-4 pb-4">{children}</div>}
     </div>
   );
 }
@@ -57,19 +57,22 @@ export default function Research() {
   const data = researchData[selected] || researchData["AAPL"];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-bold" style={{ color: "#F9FAFB" }}>Research Dashboard</h1>
-        <p className="text-sm mt-1" style={{ color: "#9CA3AF" }}>AI-powered deep-dive analysis and investment research</p>
+        <h1 className="text-xl md:text-2xl font-bold" style={{ color: "#F9FAFB" }}>Research Dashboard</h1>
+        <p className="text-xs md:text-sm mt-1" style={{ color: "#9CA3AF" }}>AI-powered deep-dive analysis and investment research</p>
       </div>
 
-      {/* Stock Selector */}
-      <div className="flex flex-wrap gap-2">
+      {/* Stock Selector — horizontally scrollable on mobile */}
+      <div
+        className="flex gap-2 overflow-x-auto pb-1"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
         {mockStocks.slice(0, 8).map(s => (
           <button
             key={s.ticker}
             onClick={() => setSelected(s.ticker)}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150"
+            className="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 flex-shrink-0"
             style={{
               background: selected === s.ticker ? "rgba(59,130,246,0.2)" : "#111827",
               color: selected === s.ticker ? "#3B82F6" : "#9CA3AF",
@@ -84,50 +87,59 @@ export default function Research() {
 
       {/* Stock Header */}
       <div
-        className="rounded-xl p-5 flex flex-wrap items-center justify-between gap-4"
+        className="rounded-xl p-4"
         style={{ background: "#111827", border: "1px solid #1F2937" }}
       >
-        <div className="flex items-center gap-4">
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center text-base font-black"
-            style={{ background: "linear-gradient(135deg, #1E3A5F, #3B82F6)", color: "#F9FAFB" }}
-          >
-            {stock.ticker.slice(0, 2)}
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold" style={{ color: "#F9FAFB" }}>{stock.ticker}</span>
-              <SignalBadge signal={stock.signal} />
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div
+              className="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-sm font-black flex-shrink-0"
+              style={{ background: "linear-gradient(135deg, #1E3A5F, #3B82F6)", color: "#F9FAFB" }}
+            >
+              {stock.ticker.slice(0, 2)}
             </div>
-            <p className="text-sm" style={{ color: "#9CA3AF" }}>{stock.company} · {stock.sector}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-6">
-          <div className="text-right">
-            <div className="text-2xl font-black" style={{ color: "#F9FAFB" }}>${stock.price.toFixed(2)}</div>
-            <div className="text-sm font-semibold" style={{ color: stock.changePct >= 0 ? "#22C55E" : "#EF4444" }}>
-              {stock.changePct >= 0 ? "+" : ""}{stock.changePct.toFixed(2)}% today
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-lg font-bold" style={{ color: "#F9FAFB" }}>{stock.ticker}</span>
+                <SignalBadge signal={stock.signal} />
+              </div>
+              <p className="text-xs mt-0.5 truncate" style={{ color: "#9CA3AF" }}>{stock.company} · {stock.sector}</p>
             </div>
           </div>
-          <button
-            onClick={() => navigate(`/stock/${stock.ticker}`)}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-150"
-            style={{ background: "rgba(59,130,246,0.15)", color: "#3B82F6", border: "1px solid rgba(59,130,246,0.3)", cursor: "pointer" }}
-          >
-            Full Analysis →
-          </button>
+
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="text-right">
+              <div className="text-xl font-black" style={{ color: "#F9FAFB" }}>${stock.price.toFixed(2)}</div>
+              <div className="text-xs font-semibold" style={{ color: stock.changePct >= 0 ? "#22C55E" : "#EF4444" }}>
+                {stock.changePct >= 0 ? "+" : ""}{stock.changePct.toFixed(2)}%
+              </div>
+            </div>
+            <button
+              onClick={() => navigate(`/stock/${stock.ticker}`)}
+              className="hidden sm:flex px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150"
+              style={{ background: "rgba(59,130,246,0.15)", color: "#3B82F6", border: "1px solid rgba(59,130,246,0.3)", cursor: "pointer" }}
+            >
+              Full Analysis →
+            </button>
+          </div>
         </div>
+
+        {/* Mobile: Full Analysis button below */}
+        <button
+          onClick={() => navigate(`/stock/${stock.ticker}`)}
+          className="sm:hidden mt-3 w-full py-2 rounded-lg text-xs font-medium text-center"
+          style={{ background: "rgba(59,130,246,0.15)", color: "#3B82F6", border: "1px solid rgba(59,130,246,0.3)", cursor: "pointer" }}
+        >
+          View Full Analysis →
+        </button>
       </div>
 
       {/* AI Summary */}
       <Section title="AI Stock Summary" icon={Sparkles} color="#8B5CF6">
-        <div
-          className="rounded-lg p-4"
-          style={{ background: "rgba(139,92,246,0.05)", border: "1px solid rgba(139,92,246,0.15)" }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <Brain size={14} style={{ color: "#8B5CF6" }} />
-            <span className="text-xs font-semibold" style={{ color: "#8B5CF6" }}>QuantX AI · Generated May 15, 2026</span>
+        <div className="rounded-lg p-3" style={{ background: "rgba(139,92,246,0.05)", border: "1px solid rgba(139,92,246,0.15)" }}>
+          <div className="flex items-center gap-2 mb-2">
+            <Brain size={13} style={{ color: "#8B5CF6" }} />
+            <span className="text-xs font-semibold" style={{ color: "#8B5CF6" }}>QuantX AI · May 15, 2026</span>
           </div>
           <p className="text-sm leading-relaxed" style={{ color: "#D1D5DB" }}>{data.aiSummary}</p>
         </div>
@@ -135,12 +147,13 @@ export default function Research() {
 
       {/* Earnings */}
       <Section title="Earnings Insight" icon={TrendingUp} color="#22C55E">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        {/* 2 cols on mobile, 4 on md */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
           {[
-            { label: "EPS (Actual)",   value: `$${stock.eps}`,       vs: "+$0.12 beat" },
-            { label: "Revenue",        value: stock.revenue,          vs: "+4.2% YoY" },
-            { label: "Gross Margin",   value: stock.profitMargin,     vs: "+80bps" },
-            { label: "Next Earnings",  value: "Jul 31",               vs: "~47 days" },
+            { label: "EPS (Actual)",  value: `$${stock.eps}`,   vs: "+$0.12 beat" },
+            { label: "Revenue",       value: stock.revenue,      vs: "+4.2% YoY" },
+            { label: "Gross Margin",  value: stock.profitMargin, vs: "+80bps" },
+            { label: "Next Earnings", value: "Jul 31",           vs: "~47 days" },
           ].map(m => (
             <div key={m.label} className="rounded-lg p-3 text-center" style={{ background: "#0D1117" }}>
               <div className="text-xs mb-1" style={{ color: "#9CA3AF" }}>{m.label}</div>
@@ -154,20 +167,21 @@ export default function Research() {
 
       {/* Macro */}
       <Section title="Macro Impact" icon={Globe} color="#3B82F6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+        {/* 1 col on mobile, 2 on md */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
           {[
-            { factor: "Fed Rate Policy",    impact: "Positive",  detail: "Rate cuts expected H2 2026" },
-            { factor: "USD Strength",       impact: "Negative",  detail: "~2% FX revenue headwind" },
-            { factor: "China Economy",      impact: "Negative",  detail: "Slowdown risk to 18% revenue" },
-            { factor: "Consumer Spending",  impact: "Positive",  detail: "Resilient premium demand" },
+            { factor: "Fed Rate Policy",   impact: "Positive", detail: "Rate cuts expected H2 2026" },
+            { factor: "USD Strength",      impact: "Negative", detail: "~2% FX revenue headwind" },
+            { factor: "China Economy",     impact: "Negative", detail: "Slowdown risk to 18% revenue" },
+            { factor: "Consumer Spending", impact: "Positive", detail: "Resilient premium demand" },
           ].map(m => (
             <div key={m.factor} className="flex items-center justify-between p-3 rounded-lg" style={{ background: "#0D1117" }}>
-              <div>
+              <div className="min-w-0 mr-3">
                 <div className="text-sm font-medium" style={{ color: "#F9FAFB" }}>{m.factor}</div>
                 <div className="text-xs mt-0.5" style={{ color: "#9CA3AF" }}>{m.detail}</div>
               </div>
               <span
-                className="text-xs font-semibold px-2 py-1 rounded-full"
+                className="text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0"
                 style={{
                   background: m.impact === "Positive" ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)",
                   color: m.impact === "Positive" ? "#22C55E" : "#EF4444",
@@ -183,15 +197,15 @@ export default function Research() {
 
       {/* Competitive Position */}
       <Section title="Competitive Position" icon={BookOpen} color="#F59E0B">
-        <p className="text-sm leading-relaxed" style={{ color: "#D1D5DB" }}>{data.competitivePosition}</p>
-        <div className="grid grid-cols-3 gap-3 mt-4">
+        <p className="text-sm leading-relaxed mb-3" style={{ color: "#D1D5DB" }}>{data.competitivePosition}</p>
+        <div className="grid grid-cols-3 gap-2">
           {[
-            { label: "Market Share",   value: "18%",   sub: "Global Smartphone" },
-            { label: "Premium Share",  value: "80%+",  sub: ">$800 Segment" },
-            { label: "Ecosystem",      value: "2.2B",  sub: "Active Devices" },
+            { label: "Market Share", value: "18%",  sub: "Global Smartphone" },
+            { label: "Premium Share", value: "80%+", sub: ">$800 Segment" },
+            { label: "Ecosystem",    value: "2.2B",  sub: "Active Devices" },
           ].map(m => (
             <div key={m.label} className="rounded-lg p-3 text-center" style={{ background: "#0D1117" }}>
-              <div className="text-lg font-black" style={{ color: "#F59E0B" }}>{m.value}</div>
+              <div className="text-base md:text-lg font-black" style={{ color: "#F59E0B" }}>{m.value}</div>
               <div className="text-xs font-medium mt-0.5" style={{ color: "#F9FAFB" }}>{m.label}</div>
               <div className="text-xs" style={{ color: "#9CA3AF" }}>{m.sub}</div>
             </div>
@@ -226,21 +240,22 @@ export default function Research() {
           {data.recentNews.map((n, i) => (
             <div
               key={i}
-              className="flex items-start justify-between gap-4 p-3 rounded-lg cursor-pointer transition-colors duration-100"
+              className="flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors duration-100"
               style={{ background: "#0D1117" }}
               onMouseEnter={e => (e.currentTarget.style.background = "#1F2937")}
               onMouseLeave={e => (e.currentTarget.style.background = "#0D1117")}
             >
-              <div className="flex items-start gap-3">
-                <span
-                  className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0"
-                  style={{ background: n.sentiment === "positive" ? "#22C55E" : "#EF4444" }}
-                />
-                <p className="text-sm" style={{ color: "#F9FAFB" }}>{n.headline}</p>
-              </div>
-              <div className="flex-shrink-0 text-right">
-                <div className="text-xs" style={{ color: "#9CA3AF" }}>{n.source}</div>
-                <div className="text-xs" style={{ color: "#9CA3AF" }}>{n.time}</div>
+              <span
+                className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0"
+                style={{ background: n.sentiment === "positive" ? "#22C55E" : "#EF4444" }}
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm leading-snug" style={{ color: "#F9FAFB" }}>{n.headline}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xs" style={{ color: "#9CA3AF" }}>{n.source}</span>
+                  <span className="text-xs" style={{ color: "#9CA3AF" }}>·</span>
+                  <span className="text-xs" style={{ color: "#9CA3AF" }}>{n.time}</span>
+                </div>
               </div>
             </div>
           ))}
